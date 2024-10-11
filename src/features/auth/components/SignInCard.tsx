@@ -12,25 +12,24 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import Link from 'next/link';
+import { loginSchema } from '../schema';
+import { useLogin } from '../api/use-login';
 
-const formSchema = z.object({
-    email: z.string().email("Invalid Email Address").trim().min(1, "Email is required"),
-    password: z.string().min(1, "Password must be at least 8 characters"),
-})
 
-type FormType = z.infer<typeof formSchema>
+type loginType = z.infer<typeof loginSchema>
 
-export const SignInCard = () => {
-    const form = useForm<FormType>({
-        resolver: zodResolver(formSchema),
+export const SignInCard = async () => {
+    const form = useForm<loginType>({
+        resolver: zodResolver(loginSchema),
         defaultValues: {
             email: "",
             password: ""
         },
     })
+    const { mutate } = await useLogin()
 
-    const onSubmit = (values: FormType) => {
-        console.log({ values })
+    const onSubmit = (values: loginType) => {
+        mutate({ json: values })
         // Here you would typically handle the login logic
     }
 
@@ -94,7 +93,7 @@ export const SignInCard = () => {
                         <span className='text-blue-700'>
                             &nbsp; Sign Up
                         </span>
-                         </Link>
+                    </Link>
                 </p>
             </CardContent>
         </Card>
