@@ -1,4 +1,4 @@
-"use client"
+
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
@@ -12,25 +12,24 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import Link from 'next/link';
-import { loginSchema } from '../schema';
+import { loginSchema } from '../schemas';
 import { useLogin } from '../api/use-login';
 
 
-type loginType = z.infer<typeof loginSchema>
+type LoginType = z.infer<typeof loginSchema>
 
-export const SignInCard = async () => {
-    const form = useForm<loginType>({
+export const SignInCard = () => {
+    const form = useForm<LoginType>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
             email: "",
             password: ""
         },
     })
-    const { mutate } = await useLogin()
+    const { mutate } = useLogin()
 
-    const onSubmit = (values: loginType) => {
+    const onSubmit = (values: LoginType) => {
         mutate({ json: values })
-        // Here you would typically handle the login logic
     }
 
     return (

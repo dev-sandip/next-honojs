@@ -1,5 +1,4 @@
 "use client"
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,28 +11,25 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import Link from 'next/link';
+import { registerSchema } from '../schemas';
+import { useRegister } from '../api/use-register';
 
-const formSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email address").trim().min(1, "Email is required"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-})
 
-type FormType = z.infer<typeof formSchema>
+
+type RegisterType = z.infer<typeof registerSchema>
 
 export const SignUpCard = () => {
-    const form = useForm<FormType>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<RegisterType>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             name: "",
             email: "",
             password: ""
         },
     })
-
-    const onSubmit = (values: FormType) => {
-        console.log({ values })
-        // Here you would typically handle the sign-up logic
+    const { mutate } = useRegister()
+    const onSubmit = (values: RegisterType) => {
+        mutate({ json: values })
     }
 
     return (
